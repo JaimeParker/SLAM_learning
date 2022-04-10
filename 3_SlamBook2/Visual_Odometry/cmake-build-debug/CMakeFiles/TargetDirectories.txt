@@ -1,4 +1,0 @@
-/home/hazyparker/project/learn_slam/slambook2/Visual_Odometry/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/hazyparker/project/learn_slam/slambook2/Visual_Odometry/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/hazyparker/project/learn_slam/slambook2/Visual_Odometry/cmake-build-debug/CMakeFiles/orb_cv.dir
-/home/hazyparker/project/learn_slam/slambook2/Visual_Odometry/cmake-build-debug/CMakeFiles/Visual_Odometry.dir
