@@ -1,8 +1,0 @@
-/snap/clion/169/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" "/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization"
--- Found required Ceres dependency: Eigen version 3.4.0 in /usr/local/share/eigen3/cmake
--- Found required Ceres dependency: glog
--- Found required Ceres dependency: gflags
--- Found Ceres version: 2.0.0 installed in: /usr/local with components: [EigenSparse, SparseLinearAlgebraLibrary, LAPACK, SuiteSparse, CXSparse, SchurSpecializations, Multithreading]
--- Configuring done
--- Generating done
--- Build files have been written to: /home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug

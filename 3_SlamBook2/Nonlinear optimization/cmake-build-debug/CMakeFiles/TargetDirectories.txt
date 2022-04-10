@@ -1,3 +1,0 @@
-/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug/CMakeFiles/Nonlinear_optimization.dir
