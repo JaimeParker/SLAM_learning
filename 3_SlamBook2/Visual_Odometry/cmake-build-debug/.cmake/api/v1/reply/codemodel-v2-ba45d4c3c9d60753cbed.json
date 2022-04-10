@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Visual_Odometry",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Visual_Odometry::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Visual_Odometry-Debug-26eed28e88eb34f58daf.json",
+					"name" : "Visual_Odometry",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "orb_cv::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-orb_cv-Debug-c594b4914c35bc75227b.json",
+					"name" : "orb_cv",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/hazyparker/project/learn_slam/slambook2/Visual_Odometry/cmake-build-debug",
+		"source" : "/home/hazyparker/project/learn_slam/slambook2/Visual_Odometry"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

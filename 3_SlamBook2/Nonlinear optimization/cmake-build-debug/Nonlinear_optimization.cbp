@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Nonlinear_optimization"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\opencv4\;CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Ceres\;CMake Files\..\..\..\..\..\..\usr\local\share\;CMake Files\..\..\..\..\..\..\usr\local\share\eigen3\;CMake Files\..\..\..\..\..\..\usr\local\share\eigen3\cmake\;CMake Files\..\..\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\gflags\;CMake Files\..\..\..\..\3rdParty\;CMake Files\..\..\..\..\3rdParty\g2o\;CMake Files\..\..\..\..\3rdParty\g2o\cmake_modules\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Nonlinear_optimization">
+				<Option output="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug/Nonlinear_optimization" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCERES_EXPORT_INTERNAL_SYMBOLS"/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/{OpenCV_INCLUDE_DIRS}"/>
+					<Add directory="/usr/local/include/eigen3"/>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 Nonlinear_optimization"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Nonlinear_optimization/fast">
+				<Option output="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug/Nonlinear_optimization" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCERES_EXPORT_INTERNAL_SYMBOLS"/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/{OpenCV_INCLUDE_DIRS}"/>
+					<Add directory="/usr/local/include/eigen3"/>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 Nonlinear_optimization/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/hazyparker/project/learn_slam/slambook2/Nonlinear\ optimization/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/LMMethod.cpp">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/LMMethod.h">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/LMMethod2.cpp">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/LMMethod2.h">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/ceresCurveFitting.cpp">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/ceresCurveFitting.h">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/g2oCurveFitting.cpp">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/g2oCurveFitting.h">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/gaussNewton.cpp">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/gaussNewton.h">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/main.cpp">
+			<Option target="Nonlinear_optimization"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/opencv4/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/opencv4/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/Ceres/CeresConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Ceres\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/Ceres/CeresConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Ceres\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/Ceres/CeresTargets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Ceres\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/Ceres/CeresTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Ceres\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/lib/cmake/Ceres/FindGlog.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Ceres\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/share/eigen3/cmake/Eigen3Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\eigen3\cmake\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/share/eigen3/cmake/Eigen3ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\eigen3\cmake\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/local/share/eigen3/cmake/Eigen3Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\eigen3\cmake\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/lib/x86_64-linux-gnu/cmake/gflags/gflags-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\gflags\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/lib/x86_64-linux-gnu/cmake/gflags/gflags-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\gflags\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/lib/x86_64-linux-gnu/cmake/gflags/gflags-targets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\gflags\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../../../usr/lib/x86_64-linux-gnu/cmake/gflags/gflags-targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\gflags\"/>
+		</Unit>
+		<Unit filename="/home/hazyparker/project/learn_slam/slambook2/Nonlinear optimization/../../../../3rdParty/g2o/cmake_modules/FindG2O.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\3rdParty\g2o\cmake_modules\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
