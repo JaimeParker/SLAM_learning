@@ -1,12 +1,8 @@
 #  Visual SLAM
 
-什么是SLAM？
-
-[百度百科的定义](https://baike.baidu.com/item/SLAM/7661974)
+什么是SLAM？[百度百科的定义](https://baike.baidu.com/item/SLAM/7661974)
 
 SLAM，同步定位与建图，simultaneous localization and mapping，意义在于实现机器人的自主定位和导航
-
-对视觉SLAM做一个初步认识
 
 ## 第一讲 前言
 
@@ -1036,7 +1032,28 @@ $$
 
 ### 11.3 字典
 
+#### 11.3.1 字典的结构
+
+字典的生成问题类似一个聚类（Clustering）问题；即对大量的图像提取特征点，然后构成一个容纳$K$个单词的字典；
+
+* 聚类问题可以使用典型的K-means方法
+* 为了保证查找效率，使用k叉树的数据结构
+* 构建了一个k分支，深度为d的树，则单词的数量有$k^d$个
+* 则在查找对应的单词时，只需要比对d次，就可以找到最后的单词
+
+![k-trees](https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Octree2.png/400px-Octree2.png)
+
+#### 11.3.2 实践：创建字典
+
+调用DBoW3的字典生成接口；
+
 ### 11.4 相似度计算
+
+#### 11.4.1 理论部分
+
+#### 11.4.2 实践：相似度的计算
+
+
 
 ### 11.5 实验分析与评述
 
