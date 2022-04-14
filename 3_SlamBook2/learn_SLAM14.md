@@ -1047,15 +1047,110 @@ $$
 
 调用DBoW3的字典生成接口；
 
+```cpp
+    // detect ORB features
+    cout<<"detecting ORB features ... "<<endl;
+    Ptr< Feature2D > detector = ORB::create();
+    vector<Mat> descriptors;
+    for ( Mat& image:images )
+    {
+        vector<KeyPoint> key_points;
+        Mat descriptor;
+        detector->detectAndCompute( image, Mat(), key_points, descriptor );
+        descriptors.push_back( descriptor );
+    }
+
+    // create vocabulary
+    cout<<"creating vocabulary ... "<<endl;
+    DBoW3::Vocabulary vocab;
+    vocab.create( descriptors );
+    cout<<"vocabulary info: "<<vocab<<endl;
+    vocab.save( "vocabulary.yml.gz" );
+    cout<<"done"<<endl;
+```
+
 ### 11.4 相似度计算
 
 #### 11.4.1 理论部分
 
 #### 11.4.2 实践：相似度的计算
 
+```cpp
+    // detect ORB features of all images
+    cout << "Detecting ORB features..." << endl;
+    Ptr<Feature2D> detector = ORB::create();  // method to define detector of ORB
+    vector<Mat> descriptors;                  // define descriptors, saving descriptors
+    for (Mat &image:images){
+        vector<KeyPoint> key_points;
+        Mat descriptor;
+        detector->detectAndCompute(image, Mat(), key_points, descriptor);
+        descriptors.push_back(descriptor);    // push each descriptor into descriptors
+    }
 
+    // compare with database
+    cout << "Comparing images with database" << endl;
+    DBoW3::Database db(my_voc, false, 0);
+    for (auto & descriptor : descriptors){
+        db.add(descriptor);
+    }
+    cout << "Database info:" << db << endl;
+    for (int i = 0; i < descriptors.size(); i++){
+        DBoW3::QueryResults ret;  // ret = "n results" + <> etc
+        db.query(descriptors[i], ret, 4);      // max result=4
+        cout << "searching for image " << i << " returns " << ret << endl << endl;
+    }
+    cout << "Comparison done." << endl;
+```
 
 ### 11.5 实验分析与评述
+
+#### 11.5.1 增加字典规模
+
+`DBoW3`给的评分，相似图像的相似度为5%，不相似图像的相似度为2%，差距不大，这可能是由于字典规模太小导致的；
+
+如果增加字典的规模，用更多的图像训练字典，则可以使相似图像相对于其他图像的评分变得更加显著；这说明增加字典规模是有益的；
+
+#### 11.5.2 相似性评分的处理
+
+做法是取一个先验相似度，然后作归一化处理；
+
+先验相似度$s(v_t,v_{t-\Delta t})$，表示某时刻关键帧图像与上一时刻的相似度；然后其他的分值都参照其进行归一化：
+$$
+s(v_t,v_{tj})'=s(v_t,v_{tj})/s(v_t,v_{t-\Delta t})
+$$
+例如，如果当前关键帧与之前某关键帧的相似度超过了与上一时刻关键帧相似度的3倍，则认为出现了回环；
+
+#### 11.5.3 关键帧的处理
+
+用于回环检测的帧最好稀疏一些，彼此之间不太相同，又能涵盖整个环境；
+
+把相近的回环（比如第1帧与第n，n+1，n+2帧）聚成一类，使算法不要反复地检测同一类的回环；
+
+#### 11.5.4 检测之后的验证
+
+词袋的检测算法：
+
+* 完全依赖外观，没有利用任何几何信息
+* 不在乎单词顺序，容易引发感知偏差
+
+因此会有一个验证步骤；
+
+验证的方法有很多，比如：
+
+* 时间上的一致性检测，认为单词检测到的回环不足以构成回环，而在一段时间中一直检测到的回环，才是正确的回环；
+* 空间上的一致性检测，对回环检测到的两个帧进行特征匹配，估计相机的运行，然后把运动放到之前的位姿图中，检查与之前的估计是否有很大出入；
+
+验证是必须的，但方法却有很多；
+
+#### 11.5.5 与机器学习的关系
+
+`VLAD`有基于`CNN`的实现；
+
+
+
+## 第十二讲 建图
+
+
 
 ## 参考
 
