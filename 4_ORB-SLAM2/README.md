@@ -208,6 +208,10 @@ st->op1(right)->op2(right)->op3(right)->op4
 
 `mptLoopClosing`
 
+### 1.4 关键数据结构
+
+关键帧和地图点的数据结构，弄清楚是怎么保存的，这样才能明白是怎样建图的；de
+
 ## 2. Tracking
 
 * Pre-process Input
@@ -648,11 +652,78 @@ else
 
 对于`mbVO`为true的情况：
 
+计算了两个相机位姿，一个来自motion model，另一个用于重定位；如果重定位成功则选择重定位，否则继续采用视觉里程计方法；
 
+```cpp
+                    // We compute two camera poses, one from motion model and one doing relocalization.
+                    // If relocalization is sucessfull we choose that solution, otherwise we retain
+                    // the "visual odometry" solution.
+```
+
+一些变量的定义
+
+```cpp
+                    bool bOKMM = false;  // motion model
+                    bool bOKReloc = false;  // re-localization
+                    vector<MapPoint*> vpMPsMM;  // MP by motion model
+                    vector<bool> vbOutMM;  // what?
+                    cv::Mat TcwMM;  // pose matrix of camera
+```
+
+缩写还行，有的变量不太清楚，有点疑惑，不是按照google的c++规范吗？
+
+之后是条件判断，当速度矩阵有效时：
+
+```cpp
+                    if(!mVelocity.empty())
+                    {
+                        bOKMM = TrackWithMotionModel();
+                        vpMPsMM = mCurrentFrame.mvpMapPoints;
+                        vbOutMM = mCurrentFrame.mvbOutlier;
+                        TcwMM = mCurrentFrame.mTcw.clone();
+                    }
+                    bOKReloc = Relocalization();
+
+```
+
+如果使用了motion model：
+
+```cpp
+if(bOKMM && !bOKReloc)
+                    {
+                        mCurrentFrame.SetPose(TcwMM);
+                        mCurrentFrame.mvpMapPoints = vpMPsMM;
+                        mCurrentFrame.mvbOutlier = vbOutMM;
+
+                        if(mbVO)
+                        {
+                            for(int i =0; i<mCurrentFrame.N; i++)
+                            {
+                                if(mCurrentFrame.mvpMapPoints[i] && !mCurrentFrame.mvbOutlier[i])
+                                {
+                                    mCurrentFrame.mvpMapPoints[i]->IncreaseFound();
+                                }
+                            }
+                        }
+                    }
+```
+
+如果使用了re-localization：
+
+```cpp
+                    else if(bOKReloc)
+                    {
+                        mbVO = false;
+                    }
+
+                    bOK = bOKReloc || bOKMM;
+```
+
+最后给`bOK`赋值；
 
 ### 2.3 Track Local Map
 
-
+ 
 
 ### 2.4 New KeyFrame Decision
 

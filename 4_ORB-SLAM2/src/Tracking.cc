@@ -372,15 +372,15 @@ void Tracking::Track()
                     // In last frame we tracked mainly "visual odometry" points.
                     // mbVO is set true
 
-                    // We compute two camera poses, one from motion model and one doing relocalization.
-                    // If relocalization is sucessfull we choose that solution, otherwise we retain
+                    // We compute two camera poses, one from motion model and one doing re-localization.
+                    // If re-localization is successful we choose that solution, otherwise we retain
                     // the "visual odometry" solution.
 
-                    bool bOKMM = false;
-                    bool bOKReloc = false;
-                    vector<MapPoint*> vpMPsMM;
-                    vector<bool> vbOutMM;
-                    cv::Mat TcwMM;
+                    bool bOKMM = false;  // motion model
+                    bool bOKReloc = false;  // re-localization
+                    vector<MapPoint*> vpMPsMM;  // MP by motion model
+                    vector<bool> vbOutMM;  // what?
+                    cv::Mat TcwMM;  // pose matrix of camera
                     // if Velocity matrix is valid
                     if(!mVelocity.empty())
                     {
