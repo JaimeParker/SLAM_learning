@@ -140,6 +140,10 @@
 
 进而完成了`mTrackState`，`mTrackedMapPoints`，`mTrackedKeyPointsUn`三个`System`类成员的赋值；
 
+下图表示了各头文件之间的包含关系，和cc文件的包含关系并不完全一样；但是共用的数据是一定有相同的头文件的；
+
+![system.h](image/System_header.png)
+
 ### 1.3 数据流
 
 在简单看了ORB的论文之后可能有更清楚的理解；现需要建立框图到代码和具体对象的联系；
