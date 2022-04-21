@@ -64,8 +64,87 @@ MapPoint::MapPoint(const cv::Mat &Pos, Map* pMap, Frame* pFrame, const int &idxF
 * 随后对该帧进行了一些操作，获得了描述子，并且复制给了`mDescriptor`成员变量，其在头文件的定义是 Best descriptor to fast matching
 * 关键帧的函数里没有进行相减的运算，可能关键帧构造函数是先从普通帧构造函数来的，所以没有相减和归一化；==也不太对；==
 ## AddObservation(KeyFrame* pKF, size_t idx)
+博主的解释是该函数用来增加地图点的观测关系；
+```cpp
+    unique_lock<mutex> lock(mMutexFeatures);
+    // if observation is established, then return
+    if(mObservations.count(pKF))
+        return;
+    // else, add this observation
+    mObservations[pKF]=idx;
+```
+* `mObservations`的定义为`std::map<KeyFrame*,size_t> mObservations;`，Keyframes observing the point and associated index in keyframe，观察到该点的关键帧和关键帧中的系数
+* 如果已经存在观测关系，就返回
+* 如果不存在观测关系，则添加该观测关系
+```cpp
+    // 2 for stereo camera, mvuRight exists
+    if(pKF->mvuRight[idx]>=0)
+        nObs+=2;
+    // 1 for monocular camera, mvuRight doesn't exist
+    else
+        nObs++;
+```
+* `nObs`为观测次数
+* 分单目双目添加观测次数
+## void MapPoint::EraseObservation(KeyFrame* pKF)
+函数意为删除观测关系；参数为关键帧指针；
+```cpp
+{
+    bool bBad=false;
+    {
+        unique_lock<mutex> lock(mMutexFeatures);
+        // if observation is established in this key-frame, namely the KeyFrame can see this point
+        if(mObservations.count(pKF))
+        {
+            // same with the AddObservation(), different situation for stereo and monocular
+            int idx = mObservations[pKF];
+            if(pKF->mvuRight[idx]>=0)
+                nObs-=2;
+            else
+                nObs--;
 
+            // delete the observation relationship between KeyFrame and the MapPoint
+            mObservations.erase(pKF);
 
+            // if KeyFrame is reference KeyFrame, re-direct the mpRefKF
+            if(mpRefKF==pKF)
+                mpRefKF=mObservations.begin()->first;
+
+            // If only 2 observations or less, discard point
+            if(nObs<=2)
+                bBad=true;  // this is a bad observation
+        }
+    }
+
+    // if bBad is true, this observation will be discarded, set a bad flag
+    if(bBad)
+        SetBadFlag();
+}
+```
+## void MapPoint::SetBadFlag()
+删除地图点，清除关键帧和地图中所有和该地图点对应的关联关系；
+```cpp
+{
+    map<KeyFrame*,size_t> obs;
+    {
+        unique_lock<mutex> lock1(mMutexFeatures);
+        unique_lock<mutex> lock2(mMutexPos);
+        mbBad=true;
+        obs = mObservations;
+        // clear all observations of that MapPoint
+        mObservations.clear();
+    }
+    for(map<KeyFrame*,size_t>::iterator mit=obs.begin(), mend=obs.end(); mit!=mend; mit++)
+    {
+        KeyFrame* pKF = mit->first;
+        // erase the match with MapPoint and KeyFrame
+        pKF->EraseMapPointMatch(mit->second);
+    }
+
+    // delete MapPoint from Map
+    mpMap->EraseMapPoint(this);
+}
+```
 
 
 

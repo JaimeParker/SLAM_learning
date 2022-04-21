@@ -107,12 +107,17 @@ KeyFrame* MapPoint::GetReferenceKeyFrame()
 void MapPoint::AddObservation(KeyFrame* pKF, size_t idx)
 {
     unique_lock<mutex> lock(mMutexFeatures);
+    // if observation is established, then return
+    // this observation is counted
     if(mObservations.count(pKF))
         return;
+    // else, add this observation
     mObservations[pKF]=idx;
 
+    // 2 for stereo camera, mvuRight exists
     if(pKF->mvuRight[idx]>=0)
         nObs+=2;
+    // 1 for monocular camera, mvuRight doesn't exist
     else
         nObs++;
 }
@@ -122,25 +127,30 @@ void MapPoint::EraseObservation(KeyFrame* pKF)
     bool bBad=false;
     {
         unique_lock<mutex> lock(mMutexFeatures);
+        // if observation is established in this key-frame, namely the KeyFrame can see this point
         if(mObservations.count(pKF))
         {
+            // same with the AddObservation(), different situation for stereo and monocular
             int idx = mObservations[pKF];
             if(pKF->mvuRight[idx]>=0)
                 nObs-=2;
             else
                 nObs--;
 
+            // delete the observation relationship between KeyFrame and the MapPoint
             mObservations.erase(pKF);
 
+            // if KeyFrame is reference KeyFrame, re-direct the mpRefKF
             if(mpRefKF==pKF)
                 mpRefKF=mObservations.begin()->first;
 
             // If only 2 observations or less, discard point
             if(nObs<=2)
-                bBad=true;
+                bBad=true;  // this is a bad observation
         }
     }
 
+    // if bBad is true, this observation will be discarded, set a bad flag
     if(bBad)
         SetBadFlag();
 }
@@ -165,14 +175,17 @@ void MapPoint::SetBadFlag()
         unique_lock<mutex> lock2(mMutexPos);
         mbBad=true;
         obs = mObservations;
+        // clear all observations of that MapPoint
         mObservations.clear();
     }
     for(map<KeyFrame*,size_t>::iterator mit=obs.begin(), mend=obs.end(); mit!=mend; mit++)
     {
         KeyFrame* pKF = mit->first;
+        // erase the match with MapPoint and KeyFrame
         pKF->EraseMapPointMatch(mit->second);
     }
 
+    // delete MapPoint from Map
     mpMap->EraseMapPoint(this);
 }
 
