@@ -57,10 +57,23 @@ Frame::Frame(const Frame &frame)
         SetPose(frame.mTcw);
 }
 
-
+// for stereo
 Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
     :mpORBvocabulary(voc),mpORBextractorLeft(extractorLeft),mpORBextractorRight(extractorRight), mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
      mpReferenceKF(static_cast<KeyFrame*>(NULL))
+     /**
+      * instruction of parameters
+      * @param imLeft image of left eye
+      * @param imRight image of right eye
+      * @param timeStamp namely time stamp
+      * @param extractorLeft ORB-extractor class, left image's ORB
+      * @param extractorRight right image's ORB-extractor
+      * @param voc ORB vocabulary
+      * @param K Intrinsic matrix of camera
+      * @param distCoef distortion coefficient
+      * @param bf baseline, feature of stereo camera
+      * @param thDepth depth(threshold depth, distinguish scene for far or close)
+      */
 {
     // Frame ID
     mnId=nNextId++;
@@ -75,18 +88,27 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
     mvInvLevelSigma2 = mpORBextractorLeft->GetInverseScaleSigmaSquares();
 
     // ORB extraction
-    thread threadLeft(&Frame::ExtractORB,this,0,imLeft);
-    thread threadRight(&Frame::ExtractORB,this,1,imRight);
+    thread threadLeft(&Frame::ExtractORB,this,0,imLeft);  // extract ORB feature from left eye
+    thread threadRight(&Frame::ExtractORB,this,1,imRight);  // extract ORB feature from right eye
+    // thread::join https://www.cplusplus.com/reference/thread/thread/join/
+    // the function of the two thread::join sentences below:
+    // thread Frame must wait until ORB extraction of left and right images finished
+    // a good example for better understanding: https://www.cnblogs.com/adorkable/p/12722209.html
     threadLeft.join();
     threadRight.join();
 
-    N = mvKeys.size();
+    N = mvKeys.size();  // mvKeys means vector of key-points, original for visualization
 
     if(mvKeys.empty())
+        // usually mbKeys will not be empty in stereo situation
+        // if so, return
         return;
 
+    // un-distort key points
     UndistortKeyPoints();
 
+    // compute matches between left and right images
+    // if successes, depth info will be sent to mvDepth
     ComputeStereoMatches();
 
     mvpMapPoints = vector<MapPoint*>(N,static_cast<MapPoint*>(NULL));    
@@ -113,9 +135,11 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
 
     mb = mbf/fx;
 
+    // namely, assign features into grid
     AssignFeaturesToGrid();
 }
 
+// for RGB-D, not in consideration
 Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
     :mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
      mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth)
@@ -170,11 +194,12 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeSt
     AssignFeaturesToGrid();
 }
 
-
+// constructor function for monocular sensor
 Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
     :mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
      mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth)
 {
+    // be advised that ORB extractor right is a null ptr cause this is mono
     // Frame ID
     mnId=nNextId++;
 
@@ -193,14 +218,17 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extra
     N = mvKeys.size();
 
     if(mvKeys.empty())
+        // return if there is no key points
         return;
 
+    // un-distort
     UndistortKeyPoints();
 
     // Set no stereo information
     mvuRight = vector<float>(N,-1);
     mvDepth = vector<float>(N,-1);
 
+    // set MapPoint variable
     mvpMapPoints = vector<MapPoint*>(N,static_cast<MapPoint*>(NULL));
     mvbOutlier = vector<bool>(N,false);
 
@@ -244,8 +272,10 @@ void Frame::AssignFeaturesToGrid()
     }
 }
 
+// extract ORB features, depending on left eye or right eye
 void Frame::ExtractORB(int flag, const cv::Mat &im)
 {
+    // flag = 0, using left eye
     if(flag==0)
         (*mpORBextractorLeft)(im,cv::Mat(),mvKeys,mDescriptors);
     else
@@ -394,6 +424,7 @@ bool Frame::PosInGrid(const cv::KeyPoint &kp, int &posX, int &posY)
 
 void Frame::ComputeBoW()
 {
+    // create bag if no BoW2 words found
     if(mBowVec.empty())
     {
         vector<cv::Mat> vCurrentDesc = Converter::toDescriptorVector(mDescriptors);
