@@ -16,6 +16,14 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with ORB-SLAM2. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * <https://zhuanlan.zhihu.com/p/84905697>
+ * <https://blog.csdn.net/chishuideyu/article/details/76165461?spm=1001.2014.3001.5502>
+ *
+ * 检测队列中是否有新的关键帧, CheckNewKeyFrames
+ * 检测闭环, DetectLoop
+ * 计算相似变换, ComputeSim3
+ * 计算闭环，融合位图, CorrectLoop
 */
 
 #include "LoopClosing.h"
@@ -100,6 +108,11 @@ bool LoopClosing::CheckNewKeyFrames()
     return(!mlpLoopKeyFrameQueue.empty());
 }
 
+/**
+ * namely detect loop, attention on the algorithm
+ * an image showing the structure: <https://pic2.zhimg.com/v2-66d8860e4abbfa5824b59b5dafa6e445_r.jpg>
+ * @return
+ */
 bool LoopClosing::DetectLoop()
 {
     {
