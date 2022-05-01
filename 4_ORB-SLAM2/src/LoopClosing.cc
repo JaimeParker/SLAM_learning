@@ -111,41 +111,49 @@ bool LoopClosing::CheckNewKeyFrames()
 /**
  * namely detect loop, attention on the algorithm
  * an image showing the structure: <https://pic2.zhimg.com/v2-66d8860e4abbfa5824b59b5dafa6e445_r.jpg>
+ *
  * @return
  */
 bool LoopClosing::DetectLoop()
 {
     {
-        unique_lock<mutex> lock(mMutexLoopQueue);
-        mpCurrentKF = mlpLoopKeyFrameQueue.front();
-        mlpLoopKeyFrameQueue.pop_front();
+        // use mutex to extract a key-frame
+        unique_lock<mutex> lock(mMutexLoopQueue);  // lock loop queue
+        mpCurrentKF = mlpLoopKeyFrameQueue.front();  // extract the first key-frame
+        mlpLoopKeyFrameQueue.pop_front();  // pop
         // Avoid that a keyframe can be erased while it is being process by this thread
         mpCurrentKF->SetNotErase();
     }
 
     //If the map contains less than 10 KF or less than 10 KF have passed from last loop detection
     if(mpCurrentKF->mnId<mLastLoopKFid+10)
+    // if(mpCurrentKF->mnID - mLastLoopKFid < 10), easier to understand
     {
+        // add to KeyFrame DB, then erase it
         mpKeyFrameDB->add(mpCurrentKF);
         mpCurrentKF->SetErase();
-        return false;
+        return false;  // return false, no loop detected
     }
 
     // Compute reference BoW similarity score
-    // This is the lowest score to a connected keyframe in the covisibility graph
+    // This is the lowest score to a connected keyframe in the co-visibility graph
     // We will impose loop candidates to have a higher similarity than this
+    // vpConnectedKeyFrames, pointer that pointing to co-visible KF of mpCurrentKF
     const vector<KeyFrame*> vpConnectedKeyFrames = mpCurrentKF->GetVectorCovisibleKeyFrames();
-    const DBoW2::BowVector &CurrentBowVec = mpCurrentKF->mBowVec;
-    float minScore = 1;
+    const DBoW2::BowVector &CurrentBowVec = mpCurrentKF->mBowVec;  // get BoW vector of mpCurrentKF
+    float minScore = 1;  // get minScore by using BoW
+    // for each KeyFrame that has co-visibility with mpCurrentKF
+    // a standard scoring process by BoW below
     for(size_t i=0; i<vpConnectedKeyFrames.size(); i++)
     {
         KeyFrame* pKF = vpConnectedKeyFrames[i];
         if(pKF->isBad())
             continue;
+        // get BoW vector of KeyFrame in the list of vpConnectedKeyFrames
         const DBoW2::BowVector &BowVec = pKF->mBowVec;
-
+        // get BoW similarity score
         float score = mpORBVocabulary->score(CurrentBowVec, BowVec);
-
+        // minScore is 1, if score by BoW is smaller, then use BoW score
         if(score<minScore)
             minScore = score;
     }
@@ -163,7 +171,7 @@ bool LoopClosing::DetectLoop()
     }
 
     // For each loop candidate check consistency with previous loop candidates
-    // Each candidate expands a covisibility group (keyframes connected to the loop candidate in the covisibility graph)
+    // Each candidate expands a co-visibility group (keyframes connected to the loop candidate in the co-visibility graph)
     // A group is consistent with a previous group if they share at least a keyframe
     // We must detect a consistent loop in several consecutive keyframes to accept it
     mvpEnoughConsistentCandidates.clear();
