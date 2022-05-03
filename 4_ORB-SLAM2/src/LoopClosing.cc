@@ -119,7 +119,8 @@ bool LoopClosing::CheckNewKeyFrames()
  * step4, DetectLoopCandidates, a function from KeyFrameDatabase.cc;
  *        using minScore from step3, to get Loop Candidates;
  *        KeyFrame will be added to KF Database and return false if no Candidates are found;
- * step5,
+ * step5, finding KeyFrames that have consistent relationship with currentKF;
+ *
  */
 bool LoopClosing::DetectLoop()
 {
@@ -199,7 +200,8 @@ bool LoopClosing::DetectLoop()
     // Each candidate expands a co-visibility group (keyframes connected to the loop candidate in the co-visibility graph)
     // A group is consistent with a previous group if they share at least a keyframe
     // We must detect a consistent loop in several consecutive keyframes to accept it
-    // FIXME: consistent group:
+    // FIXME: consistent group: an interesting concept
+    // declared in LoopClosing.h: typedef pair<set<KeyFrame*>,int> ConsistentGroup
     mvpEnoughConsistentCandidates.clear();  // first step, clear mvpEnoughConsistentCandidates
 
     vector<ConsistentGroup> vCurrentConsistentGroups;  // vector current consistent group
@@ -226,27 +228,33 @@ bool LoopClosing::DetectLoop()
             // sit as the first element, send as the last(end) element, quite confused
             {
                 if(sPreviousGroup.count(*sit))
+                // an instruction of std::set::count <https://www.cplusplus.com/reference/set/set/count/>
+                // and <https://vimsky.com/examples/usage/set-count-function-in-c-stl.html>
+                // searches the container for elements equivalent to val and returns the number of matcher
+                // due to container being set, return value will only be 1 or 0 to stand for containing info
                 {
+                    // if the candidate in spCandidateGroup was in the sPreviousGroup either
                     bConsistent=true;
                     bConsistentForSomeGroup=true;
-                    break;
+                    break;  // if not, break immediately
                 }
+                // else, bConsistent and bConsistentForSomeGroup will still be false
             }
 
-            if(bConsistent)
+            if(bConsistent)  // while bConsistent is true
             {
                 int nPreviousConsistency = mvConsistentGroups[iG].second;
                 int nCurrentConsistency = nPreviousConsistency + 1;
-                if(!vbConsistentGroup[iG])
+                if(!vbConsistentGroup[iG])  // while vbConsistentGroup[iG] is false
                 {
                     ConsistentGroup cg = make_pair(spCandidateGroup,nCurrentConsistency);
-                    vCurrentConsistentGroups.push_back(cg);
-                    vbConsistentGroup[iG]=true; //this avoid to include the same group more than once
+                    vCurrentConsistentGroups.push_back(cg);  // push spCandidateGroup into
+                    vbConsistentGroup[iG]=true;  // avoid including the same group more than once
                 }
-                if(nCurrentConsistency>=mnCovisibilityConsistencyTh && !bEnoughConsistent)
+                if(nCurrentConsistency>=mnCovisibilityConsistencyTh && !bEnoughConsistent)  // >=3
                 {
                     mvpEnoughConsistentCandidates.push_back(pCandidateKF);
-                    bEnoughConsistent=true; //this avoid to insert the same candidate more than once
+                    bEnoughConsistent=true;  // avoid inserting the same candidate more than once
                 }
             }
         }
