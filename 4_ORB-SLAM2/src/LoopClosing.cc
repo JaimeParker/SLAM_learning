@@ -61,7 +61,7 @@ void LoopClosing::SetLocalMapper(LocalMapping *pLocalMapper)
     mpLocalMapper=pLocalMapper;
 }
 
-
+// main thread of LoopClosing
 void LoopClosing::Run()
 {
     mbFinished =false;
@@ -109,13 +109,23 @@ bool LoopClosing::CheckNewKeyFrames()
 }
 
 /**
- * namely detect loop, attention on the algorithm
- * an image showing the structure: <https://pic2.zhimg.com/v2-66d8860e4abbfa5824b59b5dafa6e445_r.jpg>
- *
- * @return
+ * namely detect loop, attention on the algorithm;
+ * an image showing the structure: <https://pic2.zhimg.com/v2-66d8860e4abbfa5824b59b5dafa6e445_r.jpg>;
+ * @return true or false, Loop is detected or not;
+ * step1, use mutex to extract a KeyFrame and avoid it being erased;
+ * step2, if map contains less than 10 KFs, return false;
+ * step3, compute reference BoW similarity score, use KFs that have co-vision relationship with currentKF;
+ *        use the highest score among these co-vision KFs, as the minScore;
+ * step4, DetectLoopCandidates, a function from KeyFrameDatabase.cc;
+ *        using minScore from step3, to get Loop Candidates;
+ *        KeyFrame will be added to KF Database and return false if no Candidates are found;
+ * step5,
  */
 bool LoopClosing::DetectLoop()
 {
+    /**
+     * step1
+     */
     {
         // use mutex to extract a key-frame
         unique_lock<mutex> lock(mMutexLoopQueue);  // lock loop queue
@@ -125,6 +135,9 @@ bool LoopClosing::DetectLoop()
         mpCurrentKF->SetNotErase();
     }
 
+    /**
+     * step2
+     */
     //If the map contains less than 10 KF or less than 10 KF have passed from last loop detection
     if(mpCurrentKF->mnId<mLastLoopKFid+10)
     // if(mpCurrentKF->mnID - mLastLoopKFid < 10), easier to understand
@@ -135,6 +148,9 @@ bool LoopClosing::DetectLoop()
         return false;  // return false, no loop detected
     }
 
+    /**
+     * step3
+     */
     // Compute reference BoW similarity score
     // This is the lowest score to a connected keyframe in the co-visibility graph
     // We will impose loop candidates to have a higher similarity than this
@@ -158,41 +174,56 @@ bool LoopClosing::DetectLoop()
             minScore = score;
     }
 
+    /**
+     * step4
+     */
     // Query the database imposing the minimum score
+    // DetectLoopCandidates in KeyFrameDatabase.cc
+    // the function of DetectLoopCandidates is to get Loop candidates in KFs that co-visible KF not included
     vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->DetectLoopCandidates(mpCurrentKF, minScore);
+    // vpCandidates are loop candidates now
 
     // If there are no loop candidates, just add new keyframe and return false
     if(vpCandidateKFs.empty())
     {
-        mpKeyFrameDB->add(mpCurrentKF);
-        mvConsistentGroups.clear();
-        mpCurrentKF->SetErase();
+        mpKeyFrameDB->add(mpCurrentKF);  // add new KF to KF database
+        mvConsistentGroups.clear();  // FIXME: what is mvConsistentGroups(Loop detector variables)
+        mpCurrentKF->SetErase();  // standard procedure, erase mpCurrentKF
         return false;
     }
 
+    /**
+     * step5
+     */
     // For each loop candidate check consistency with previous loop candidates
     // Each candidate expands a co-visibility group (keyframes connected to the loop candidate in the co-visibility graph)
     // A group is consistent with a previous group if they share at least a keyframe
     // We must detect a consistent loop in several consecutive keyframes to accept it
-    mvpEnoughConsistentCandidates.clear();
+    // FIXME: consistent group:
+    mvpEnoughConsistentCandidates.clear();  // first step, clear mvpEnoughConsistentCandidates
 
-    vector<ConsistentGroup> vCurrentConsistentGroups;
+    vector<ConsistentGroup> vCurrentConsistentGroups;  // vector current consistent group
     vector<bool> vbConsistentGroup(mvConsistentGroups.size(),false);
     for(size_t i=0, iend=vpCandidateKFs.size(); i<iend; i++)
     {
-        KeyFrame* pCandidateKF = vpCandidateKFs[i];
+        KeyFrame* pCandidateKF = vpCandidateKFs[i];  // present Candidate, for each loop candidate
 
-        set<KeyFrame*> spCandidateGroup = pCandidateKF->GetConnectedKeyFrames();
-        spCandidateGroup.insert(pCandidateKF);
+        // an introduction of stl_set: <http://c.biancheng.net/view/7192.html>; container;
+        // spCandidateGroup is pCandidateKF 's connected KeyFrames
+        set<KeyFrame*> spCandidateGroup = pCandidateKF->GetConnectedKeyFrames();  // get connected KFs
+        spCandidateGroup.insert(pCandidateKF);  // spCandidateGroup is pCandidateKF and its connected KFs present
 
-        bool bEnoughConsistent = false;
+        bool bEnoughConsistent = false;  // is consistent KFs enough for that loop
         bool bConsistentForSomeGroup = false;
+        // for each vector consistent group previously
+        // be advised, previously, telling the reason why using clear()
         for(size_t iG=0, iendG=mvConsistentGroups.size(); iG<iendG; iG++)
         {
-            set<KeyFrame*> sPreviousGroup = mvConsistentGroups[iG].first;
+            set<KeyFrame*> sPreviousGroup = mvConsistentGroups[iG].first;  // get previous consistent group
 
-            bool bConsistent = false;
+            bool bConsistent = false;  // b means bool, bool consistent variable
             for(set<KeyFrame*>::iterator sit=spCandidateGroup.begin(), send=spCandidateGroup.end(); sit!=send;sit++)
+            // sit as the first element, send as the last(end) element, quite confused
             {
                 if(sPreviousGroup.count(*sit))
                 {
@@ -228,7 +259,7 @@ bool LoopClosing::DetectLoop()
         }
     }
 
-    // Update Covisibility Consistent Groups
+    // Update Co-visibility Consistent Groups
     mvConsistentGroups = vCurrentConsistentGroups;
 
 

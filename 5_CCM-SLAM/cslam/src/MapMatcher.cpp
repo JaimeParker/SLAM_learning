@@ -101,6 +101,7 @@ void MapMatcher::Run()
     }
 }
 
+// function form ORB-SLAM2
 bool MapMatcher::DetectLoop()
 {
     {
@@ -119,6 +120,7 @@ bool MapMatcher::DetectLoop()
         return false;
     }
 
+    // add mpCurrMap
     mpCurrMap = mpCurrentKF->GetMapptr(); //get map of KF
 
     if(!mpCurrMap)
@@ -158,7 +160,7 @@ bool MapMatcher::DetectLoop()
     }
 
     // For each loop candidate check consistency with previous loop candidates
-    // Each candidate expands a covisibility group (keyframes connected to the loop candidate in the covisibility graph)
+    // Each candidate expands a co-visibility group (keyframes connected to the loop candidate in the co-visibility graph)
     // A group is consistent with a previous group if they share at least a keyframe
     // We must detect a consistent loop in several consecutive keyframes to accept it
     mvpEnoughConsistentCandidates.clear();
