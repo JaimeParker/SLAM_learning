@@ -58,6 +58,7 @@ public:
     typedef boost::shared_ptr<KeyFrameDatabase> dbptr;
     typedef boost::shared_ptr<Map> mapptr;
 public:
+    // declaration of ClientSystem, 2 NodeHandles are needed
     ClientSystem(ros::NodeHandle Nh, ros::NodeHandle NhPrivate, const string &strVocFile, const string &strCamFile);
 
 private:

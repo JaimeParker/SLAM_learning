@@ -38,10 +38,13 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    ros::NodeHandle Nh;
-    ros::NodeHandle NhPrivate("~");
+    ros::NodeHandle Nh;  // topic name will be: node name(only), like "/image_raw"
+    ros::NodeHandle NhPrivate("~");  // topic node will be: node name/topic name, like "iris_0/image_raw"
+    // reference: <https://blog.csdn.net/weixin_44401286/article/details/112204903>
 
+    // using shared_ptr(smart pointer) to create an object of ClientSystem
     boost::shared_ptr<cslam::ClientSystem> pCSys{new cslam::ClientSystem(Nh,NhPrivate,argv[1],argv[2])};
+    // shared_ptr <http://c.biancheng.net/view/7898.html>
 
     ROS_INFO("Started CSLAM client node...");
 

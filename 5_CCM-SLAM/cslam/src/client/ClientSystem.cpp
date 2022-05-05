@@ -28,49 +28,50 @@ namespace cslam{
 
 ClientSystem::ClientSystem(ros::NodeHandle Nh, ros::NodeHandle NhPrivate, const string &strVocFile, const string &strCamFile)
     : mNh(Nh), mNhPrivate(NhPrivate), mstrCamFile(strCamFile), mpUID(new estd::UniqueIdDispenser())
-{    
+{
+    // show parameters, send to terminal
     params::ShowParams();
 
-    //+++++ load params +++++
-
-//    std::string TopicNameCamSub;
+    // load params
+    //std::string TopicNameCamSub;
     int ClientId;
-
+    // get ClientID from launch file, actually ROS parameter server
     mNhPrivate.param("ClientId",ClientId,-1);
-    mClientId = static_cast<size_t>(ClientId);
+    mClientId = static_cast<size_t>(ClientId);  // assign ClientID to member of class ClientSystem, mClientID
 
-    //+++++ Check settings files +++++
-
+    // Check settings files
     cv::FileStorage fsSettingsCam(strCamFile.c_str(), cv::FileStorage::READ);
     if(!fsSettingsCam.isOpened())
     {
+        // check availability of camera setting file
        cerr << "Failed to open cam file at: " << strCamFile << endl;
        exit(-1);
     }
 
-    //+++++ load vocabulary +++++
-
+    // load vocabulary
     this->LoadVocabulary(strVocFile);
 
-    //+++++ Create KeyFrame Database +++++
+    // Create KeyFrame Database
     mpKFDB.reset(new KeyFrameDatabase(mpVoc));
 
-    //+++++ Create the Map +++++
+    // Create the Map
     mpMap.reset(new Map(mNh,mNhPrivate,mClientId,eSystemState::CLIENT));
     usleep(10000); //wait to avoid race conditions
-    //+++++ Initialize Agent +++++
-    mpAgent.reset(new ClientHandler(mNh,mNhPrivate,mpVoc,mpKFDB,mpMap,mClientId,mpUID,eSystemState::CLIENT,strCamFile,nullptr));
+
+    // Initialize Agent
+    mpAgent.reset(new ClientHandler(mNh,mNhPrivate,mpVoc,mpKFDB,mpMap,
+                                    mClientId,mpUID,eSystemState::CLIENT,strCamFile,nullptr));
     usleep(10000); //wait to avoid race conditions
     mpAgent->InitializeThreads();
     usleep(10000); //wait to avoid race conditions
 
-    //++++++++++
+    // End Info
     cout << endl << "Clientsystem initialized (Client ID: " << mClientId << ")" << endl;
 }
 
 void ClientSystem::LoadVocabulary(const string &strVocFile)
 {
-    //Load ORB Vocabulary
+    // Load ORB Vocabulary
     cout << endl << "Loading ORB Vocabulary. This could take a while..." << endl;
 
     mpVoc.reset(new ORBVocabulary());
