@@ -34,26 +34,34 @@ ClientHandler::ClientHandler(ros::NodeHandle Nh, ros::NodeHandle NhPrivate, vocp
       mpViewer(pViewer),mbReset(false),
       mbLoadedMap(bLoadMap)
 {
+    // in case of nullptr
     if(mpVoc == nullptr || mpKFDB == nullptr || mpMap == nullptr || (mpUID == nullptr && mSysState == eSystemState::SERVER))
     {
         cout << ("In \" ClientHandler::ClientHandler(...)\": nullptr exception") << endl;
         throw estd::infrastructure_ex();
     }
 
+    // in Map.h, set of Clients
+    // list of ID
     mpMap->msuAssClients.insert(mClientId);
 
+    // 3rd Party, g2o
     mg2oS_wcurmap_wclientmap = g2o::Sim3(); //identity transformation
 
+    // load camera topic name to ROS parameter server
+    // system state should be Client
     if(mSysState == eSystemState::CLIENT)
     {
         std::string TopicNameCamSub;
-
+        // get camera topic name, link up with node name
+        // load it in ROS parameter server
         mNhPrivate.param("TopicNameCamSub",TopicNameCamSub,string("nospec"));
         mSubCam = mNh.subscribe<sensor_msgs::Image>(TopicNameCamSub,10,boost::bind(&ClientHandler::CamImgCb,this,_1));
-
+        // show camera topic, for debug if necessary
         cout << "Camera Input topic: " << TopicNameCamSub << endl;
     }
 }
+
 #ifdef LOGGING
 void ClientHandler::InitializeThreads(boost::shared_ptr<estd::mylog> pLogger)
 #else
@@ -66,6 +74,7 @@ void ClientHandler::InitializeThreads()
     this->InitializeCC();
     #endif
 
+    // choose Initializer: client or server
     if(mSysState == eSystemState::CLIENT)
     {
         this->InitializeClient();
@@ -89,12 +98,13 @@ void ClientHandler::InitializeCC()
 {
     std::stringstream* ss;
 
+    // create new CentralControl
     mpCC.reset(new CentralControl(mNh,mNhPrivate,mClientId,mSysState,shared_from_this(),mpUID));
 
     if(mSysState == eSystemState::CLIENT)
     {
-        ss = new stringstream;
-        *ss << "FrameId";
+        ss = new stringstream;  // <https://www.geeksforgeeks.org/stringstream-c-applications/>
+        *ss << "FrameId";  // operator <<- Add a string to the string-stream object
         mNhPrivate.param(ss->str(),mpCC->mNativeOdomFrame,std::string("nospec"));
     }
     else if(mSysState == eSystemState::SERVER)
