@@ -101,6 +101,7 @@ void ClientHandler::InitializeCC()
     // create new CentralControl
     mpCC.reset(new CentralControl(mNh,mNhPrivate,mClientId,mSysState,shared_from_this(),mpUID));
 
+    // load topic name "FrameID" or "FrameID"+ClientID to ROS parameter server
     if(mSysState == eSystemState::CLIENT)
     {
         ss = new stringstream;  // <https://www.geeksforgeeks.org/stringstream-c-applications/>
@@ -110,7 +111,7 @@ void ClientHandler::InitializeCC()
     else if(mSysState == eSystemState::SERVER)
     {
         ss = new stringstream;
-        *ss << "FrameId" << mClientId;
+        *ss << "FrameId" << mClientId;  // FrameID + ClientID
         mNhPrivate.param(ss->str(),mpCC->mNativeOdomFrame,std::string("nospec"));
     }
     else
@@ -125,6 +126,7 @@ void ClientHandler::InitializeCC()
         throw estd::infrastructure_ex();
     }
 
+    // read camera settings from YAML file if system is Client
     {
         if(mSysState==CLIENT)
         {
@@ -154,8 +156,9 @@ void ClientHandler::InitializeCC()
         }
     }
 
+    // assign Native Odometry Frame to Odometry Frame in Map
     mpMap->mOdomFrame = mpCC->mNativeOdomFrame;
-    mpMap->AddCCPtr(mpCC);
+    mpMap->AddCCPtr(mpCC);  // add CentralControl ptr to Map class
 
     #ifdef LOGGING
     mpCC->mpLogger = pLogger;
@@ -166,6 +169,7 @@ void ClientHandler::InitializeCC()
 
 void ClientHandler::InitializeClient()
 {
+    // showing come to Initialize threads for ClientID
     cout << "Client " << mClientId << " --> Initialize Threads" << endl;
 
     //+++++ Create Drawers. These are used by the Viewer +++++
@@ -174,7 +178,7 @@ void ClientHandler::InitializeClient()
     //+++++ Initialize the Local Mapping thread +++++
     mpMapping.reset(new LocalMapping(mpCC,mpMap,mpKFDB,mpViewer));
     usleep(10000);
-//    +++++ Initialize the communication thread +++++
+    //+++++ Initialize the communication thread +++++
     mpComm.reset(new Communicator(mpCC,mpVoc,mpMap,mpKFDB));
     mpComm->SetMapping(mpMapping);
     usleep(10000);
@@ -190,7 +194,7 @@ void ClientHandler::InitializeClient()
     mpViewer->SetTracker(mpTracking);
     usleep(10000);
     //Launch Threads
-    //Should no do that before, a fast system might already use a pointe before it was set -> segfault
+    //Should no do that before, a fast system might already use a pointer before it was set -> segfault
     mptMapping.reset(new thread(&LocalMapping::RunClient,mpMapping));
     mptComm.reset(new thread(&Communicator::RunClient,mpComm));
     mptViewer.reset(new thread(&Viewer::RunClient,mpViewer));

@@ -81,7 +81,7 @@ public:
     //Infrastucture
     uidptr mpUID;
     size_t mClientId;
-    string mNativeOdomFrame;
+    string mNativeOdomFrame;  // Native Odometry Frame
     chptr mpCH;
     g2o::Sim3 mg2oS_wcurmap_wclientmap; //Sim3 world client to world map
     eSystemState mSysState;
